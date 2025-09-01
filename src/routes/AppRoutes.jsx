@@ -6,7 +6,11 @@ import Unauthorized from "../pages/Unauthorized";
 import DashboardAdmin from "../pages/admin/DashboardAdmin";
 import DashboardReceptionist from "../pages/receptionist/DashboardReceptionist";
 import DashboardAccountant from "../pages/accountant/DashboardAccountant";
-import DashboarDataEntry from "../pages/data_entry/DashboarDataEntry";
+import DashboardDataEntry from "../pages/data_entry/DashboardDataEntry";
+
+import EmployeeManagement from "../pages/admin/EmployeeManagement";
+import ExamManagement from "../pages/admin/ExamManagement";
+import CertificateManagement from "../pages/admin/CertificateManagement";
 
 export default function AppRoutes() {
   return (
@@ -14,6 +18,7 @@ export default function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/unauthorized" element={<Unauthorized />} />
 
+      {/* ADMIN ROUTES */}
       <Route
         path="/admin/dashboard"
         element={
@@ -23,6 +28,32 @@ export default function AppRoutes() {
         }
       />
       <Route
+        path="/admin/employee-management"
+        element={
+          <RoleRoute allowedRoles={["ADMIN"]}>
+            <EmployeeManagement />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/admin/exam-management"
+        element={
+          <RoleRoute allowedRoles={["ADMIN"]}>
+            <ExamManagement />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/admin/certificate-management"
+        element={
+          <RoleRoute allowedRoles={["ADMIN"]}>
+            <CertificateManagement />
+          </RoleRoute>
+        }
+      />
+
+      {/* Receptionist Routes */}
+      <Route
         path="/receptionist/dashboard"
         element={
           <RoleRoute allowedRoles={["NHAN_VIEN_TIEP_NHAN"]}>
@@ -30,6 +61,8 @@ export default function AppRoutes() {
           </RoleRoute>
         }
       />
+
+      {/* Accountant Routes */}
       <Route
         path="/accountant/dashboard"
         element={
@@ -38,11 +71,13 @@ export default function AppRoutes() {
           </RoleRoute>
         }
       />
+
+      {/* Data Entry Routes */}
       <Route
-        path="/  "
+        path="/data-entry/dashboard"
         element={
           <RoleRoute allowedRoles={["NHAN_VIEN_NHAP_LIEU"]}>
-            <DashboarDataEntry />
+            <DashboardDataEntry />
           </RoleRoute>
         }
       />

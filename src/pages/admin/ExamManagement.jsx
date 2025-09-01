@@ -1,13 +1,13 @@
 import TopBar from "../../components/TopBar";
 import Header from "../../components/Header";
 
-function DashboarDataEntry() {
+function ExamManagement() {
   return (
-    <div className="hover:cursor-default">
+    <div className="hover:cursor-default mb-16">
       <TopBar />
       <Header />
     </div>
   );
 }
 
-export default DashboarDataEntry;
+export default ExamManagement;
