@@ -10,14 +10,19 @@ function Header() {
   const role = useSelector((state) => state.auth.user.role);
   const userFullname = useSelector((state) => state.auth.user.fullName);
   let roleText = "";
+  let dashboardURL = "";
   if (role == "ADMIN") {
     roleText = "Quản trị viên: ";
+    dashboardURL = "/admin/dashboard";
   } else if (role == "NHAN_VIEN_TIEP_NHAN") {
     roleText = "Nhân viên viên tiếp nhận: ";
+    dashboardURL = "/admin/employee-management";
   } else if (role == "NHAN_VIEN_KE_TOAN") {
     roleText = "Nhân viên kế toán: ";
+    dashboardURL = "/admin/invoice-management";
   } else if (role == "NHAN_VIEN_NHAP_LIEU") {
     roleText = "Nhân viên nhập liệu: ";
+    dashboardURL = "/admin/data-entry";
   }
 
   const handleLogout = () => {
@@ -26,15 +31,16 @@ function Header() {
     navigate("/login");
   };
 
-  const handleReload = () => {
-    window.location.reload();
+  // Đưa về trang dashboard
+  const goToDashboard = () => {
+    navigate(dashboardURL);
   };
 
   return (
     <header className="mt-8 w-full flex flex-col">
       <div className="h-12 flex flex-row justify-between items-center px-4">
         <img
-          onClick={handleReload}
+          onClick={goToDashboard}
           src={logo2}
           alt=""
           className="h-8 w-auto rounded-lg hover:cursor-pointer"

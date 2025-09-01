@@ -1,4 +1,3 @@
-// src/routes/TitleManager.jsx
 import { useLayoutEffect } from "react";
 import { useLocation } from "react-router-dom";
 

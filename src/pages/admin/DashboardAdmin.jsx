@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 
 import TopBar from "../../components/TopBar";
 import Header from "../../components/Header";
-import AnalyticsCards from "../../components/AnalyticsCards";
+import AnalyticsCards from "./components/AnalyticsCards";
 
 function DashboardAdmin() {
   const [countUser, setCountUser] = useState(null);
