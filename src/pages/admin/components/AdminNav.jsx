@@ -9,15 +9,9 @@ function AdminNav() {
 
   return (
     <div className="p-4 w-full h-12 bg-gray-200 flex flex-row justify-between items-center">
-      {/* <Link
-        to={"/admin/dashboard"}
-        className={getLinkClass("/admin/dashboard")}
-      >
-        Trang chủ
-      </Link> */}
       <Link
         to={"/admin/employee-management"}
-        className={getLinkClass("/admin/employee-management")}
+        className={`${getLinkClass("/admin/employee-management")} `}
       >
         Quản lý nhân viên
       </Link>

@@ -3,87 +3,44 @@ import Header from "../../components/Header";
 import AdminNav from "./components/AdminNav";
 import InforDetail from "./components/InforDetail";
 
-import { Search, CirclePlus, Pencil, Trash2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { getAllUsers, searchUsers } from "../../api/userAPI";
 
-// Json dữ liệu mẫu danh sách nhân viên
-const employees = [
-  {
-    id: 1,
-    name: "Nguyễn Văn A",
-    userName: "nva@gmail.com",
-    role: "Nhân viên tiếp nhận",
-    status: 1,
-  },
-  {
-    id: 2,
-    name: "Nguyễn Văn B",
-    userName: "nvb@gmail.com",
-    role: "Nhân viên tiếp nhận",
-    status: 1,
-  },
-  {
-    id: 3,
-    name: "Nguyễn Văn C",
-    userName: "nvc@gmail.com",
-    role: "Nhân viên tiếp nhận",
-    status: 1,
-  },
-  {
-    id: 4,
-    name: "Nguyễn Văn D",
-    userName: "nvd@gmail.com",
-    role: "Nhân viên tiếp nhận",
-    status: 1,
-  },
-  {
-    id: 5,
-    name: "Nguyễn Văn E",
-    userName: "nve@gmail.com",
-    role: "Nhân viên tiếp nhận",
-    status: 0,
-  },
-  {
-    id: 6,
-    name: "Nguyễn Văn F",
-    userName: "nvf@gmail.com",
-    role: "Nhân viên tiếp nhận",
-    status: 1,
-  },
-  {
-    id: 7,
-    name: "Nguyễn Văn G",
-    userName: "nvg@gmail.com",
-    role: "Nhân viên tiếp nhận",
-    status: 0,
-  },
-  {
-    id: 8,
-    name: "Nguyễn Văn H",
-    userName: "nvh@gmail.com",
-    role: "Nhân viên tiếp nhận",
-    status: 1,
-  },
-  {
-    id: 9,
-    name: "Nguyễn Văn I",
-    userName: "nvi@gmail.com",
-    role: "Nhân viên tiếp nhận",
-    status: 1,
-  },
-  {
-    id: 10,
-    name: "Nguyễn Văn J",
-    userName: "nvj@gmail.com",
-    role: "Nhân viên tiếp nhận",
-    status: 0,
-  },
-];
+import { Search, CirclePlus, Pencil, Trash2 } from "lucide-react";
+import { useState, useEffect } from "react";
+
+const roleColors = {
+  ADMIN: "font-bold", // xanh tím than (quản trị)
+  NHAN_VIEN_TIEP_NHAN: "text-blue-500", // xanh dương (dịch vụ)
+  NHAN_VIEN_NHAP_LIEU: "text-teal-900", // tím (nhập liệu)
+  NHAN_VIEN_KE_TOAN: "text-amber-600", // vàng nâu (kế toán)
+};
 
 function EmployeeManagement() {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [employees, setEmployees] = useState(null);
+  const [keyword, setKeyword] = useState("");
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
 
+  const fetchAllUsers = async () => {
+    getAllUsers().then((data) => {
+      setEmployees(data);
+    });
+  };
+
+  const handleSearch = async () => {
+    if (!keyword.trim()) {
+      fetchAllUsers(); // nếu ô tìm kiếm trống thì load lại tất cả
+      return;
+    }
+    try {
+      const data = await searchUsers(keyword);
+      setEmployees(data);
+    } catch (err) {
+      console.error("Lỗi khi tìm kiếm:", err);
+    }
+  };
   return (
     <div className="hover:cursor-default mb-16">
       <TopBar />
@@ -100,10 +57,21 @@ function EmployeeManagement() {
               <input
                 type="text"
                 placeholder="Tên nhân viên"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSearch(keyword);
+                  }
+                }}
                 className="px-2 h-full border border-gray-400 rounded-l-lg focus:outline-none focus:placeholder-transparent"
               />
-              <button className="bg-blue-950 h-12 w-12 p-2 rounded-r-lg hover:cursor-pointer hover:opacity-90 justify-center items-center flex">
-                <Search className="  text-white font-bold" />
+              <button
+                onClick={handleSearch}
+                className="bg-blue-950 h-12 w-12 p-2 rounded-r-lg hover:cursor-pointer hover:opacity-90 justify-center items-center flex"
+              >
+                <Search className="text-white font-bold" />
               </button>
             </div>
             {/* Thêm nhân viên */}
@@ -127,24 +95,30 @@ function EmployeeManagement() {
               </tr>
             </thead>
             <tbody className="text-gray-800">
-              {employees.map((employee) => (
+              {employees?.map((employee) => (
                 <tr
                   key={employee.id}
                   className="border-b border-gray-200 hover:bg-gray-100 h-12"
                 >
                   <td className="px-4 text-center">{employee.id}</td>
-                  <td className="px-4">{employee.name}</td>
-                  <td className="px-4">{employee.userName}</td>
-                  <td className="px-4">{employee.role}</td>
+                  <td className="px-4">{employee.full_name}</td>
+                  <td className="px-4">{employee.user_name}</td>
+                  <td
+                    className={`px-4 ${
+                      roleColors[employee.role_name] || "text-gray-700"
+                    }`}
+                  >
+                    {employee.role_name}
+                  </td>
                   <td className="px-4">
                     <span
                       className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${
-                        employee.status === 1
+                        employee.enabled === 1
                           ? "bg-green-200 text-green-800"
                           : "bg-red-200 text-red-800"
                       }`}
                     >
-                      {employee.status === 1
+                      {employee.enabled === 1
                         ? "Đang hoạt động"
                         : "Không hoạt động"}
                     </span>
